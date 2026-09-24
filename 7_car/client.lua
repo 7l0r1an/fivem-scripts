@@ -13,7 +13,7 @@ RegisterCommand('car', function(source, args)
         args = { 'Info', 'Spawning vehicle: ' .. vehicleName }
     })
 
-    RequestModel(vehicleName) 
+    RequestModel(vehicleName)
     while not HasModelLoaded(vehicleName) do
         Wait(10)
     end
@@ -22,6 +22,6 @@ RegisterCommand('car', function(source, args)
     local playerPed = PlayerPedId()
     local playerCoords = GetEntityCoords(playerPed)
     local vehicle = CreateVehicle(vehicleName, playerCoords.x, playerCoords.y, playerCoords.z, GetEntityHeading(playerPed), true, false)
-    SetPedIntoVehicle(playerPed, vehicle, -1) 
+    SetPedIntoVehicle(playerPed, vehicle, -1)
     SetVehicleAsNoLongerNeeded(vehicle)
 end, false)
