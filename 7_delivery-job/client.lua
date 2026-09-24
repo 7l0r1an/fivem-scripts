@@ -17,8 +17,12 @@ local totalDeliveries = 6
 local currentDelivery = 0
 local currentTarget = nil
 
-local function getRandomPoint()
-    return deliveryPoints[math.random(#deliveryPoints)]
+local function getRandomPoint(avoid)
+    local point
+    repeat
+        point = deliveryPoints[math.random(#deliveryPoints)]
+    until point ~= avoid
+    return point
 end
 
 local function showDeliveryBlip(coords)
@@ -82,7 +86,7 @@ CreateThread(function()
                             type = 'success',
                             position = 'top'
                         })
-                        currentTarget = getRandomPoint()
+                        currentTarget = getRandomPoint(currentTarget)
                         showDeliveryBlip(currentTarget)
                         state = 'delivering'
                         showSubtitle('Du mancarea la ~y~adresa~s~.', 10000)
@@ -117,7 +121,7 @@ CreateThread(function()
                                 end
                             else
                                 TriggerServerEvent('delivery:complete', false)
-                                currentTarget = getRandomPoint()
+                                currentTarget = getRandomPoint(currentTarget)
                                 currentDelivery = currentDelivery + 1
                                 showDeliveryBlip(currentTarget)
                             end
