@@ -12,7 +12,7 @@ RegisterNetEvent('delivery:complete', function(isFinal)
 
     if isFinal then
         reward = math.random(1050, 1500)
-        message = 'Ai terminat tura! Ai primit ' .. reward .. ' dolari'
+        message = 'Ai terminat tura! Ai primit ' .. reward .. ' dolari ca bonus de performanta'
     else
         reward = math.random(350, 550)
         message = 'Livrare completa. Ai primit ' .. reward .. ' dolari. Mergi la urmatorul punct'

@@ -16,6 +16,22 @@ local deliveryBlip = nil
 local totalDeliveries = 6
 local currentDelivery = 0
 local currentTarget = nil
+local deliveryVehicle = nil
+
+local function spawnCar()
+    local vehicle = `faggio`
+    RequestModel(vehicle)
+    while not HasModelLoaded(vehicle) do
+        Wait(10)
+    end
+    local playerPed = PlayerPedId()
+    deliveryVehicle = CreateVehicle(vehicle, -1164.9478, -887.6994, 14.1496, 116.6668, true, false)
+    SetModelAsNoLongerNeeded(vehicle)
+    SetEntityAsMissionEntity(deliveryVehicle, true, true)
+    local plate = GetVehicleNumberPlateText(deliveryVehicle)
+    TriggerEvent('vehiclekeys:client:SetOwner', plate)
+    SetPedIntoVehicle(playerPed, deliveryVehicle, -1)
+end
 
 local function getRandomPoint(avoid)
     local point
@@ -86,6 +102,7 @@ CreateThread(function()
                             type = 'success',
                             position = 'top'
                         })
+                        spawnCar()
                         currentTarget = getRandomPoint(currentTarget)
                         showDeliveryBlip(currentTarget)
                         state = 'delivering'
@@ -94,6 +111,7 @@ CreateThread(function()
                     end
                 end
             end
+
         elseif state == 'delivering' then
             local dist = #(playerCoords - currentTarget)
             if dist <= 10.0 then
@@ -113,18 +131,47 @@ CreateThread(function()
                                 anim = { dict = 'mp_common', clip = 'givetake1_a' }
                             }) then
                             if currentDelivery == totalDeliveries then
-                                state = 'idle'
-                                TriggerServerEvent('delivery:complete', true)
-                                if deliveryBlip then
-                                    RemoveBlip(deliveryBlip)
-                                    deliveryBlip = nil
-                                end
+                                -- ultima livrare: trecem in 'returning', NU dam bonusul inca
+                                TriggerServerEvent('delivery:complete', false)  -- plata pt ultima livrare
+                                state = 'returning'
+                                showDeliveryBlip(pointA)  -- blip+ruta inapoi la depozit
+                                TriggerEvent('ox_lib:notify', {
+                                    title = 'Job Livrare',
+                                    description = 'Ai terminat livrarile! Intoarce masina la depozit pentru bonus.',
+                                    type = 'inform',
+                                    position = 'top'
+                                })
                             else
                                 TriggerServerEvent('delivery:complete', false)
                                 currentTarget = getRandomPoint(currentTarget)
                                 currentDelivery = currentDelivery + 1
                                 showDeliveryBlip(currentTarget)
                             end
+                        end
+                    end
+                end
+            end
+
+        elseif state == 'returning' then
+            local dist = #(playerCoords - pointA)
+            if dist < 10.0 then
+                sleep = 0
+                DrawMarker(1, pointA.x, pointA.y, pointA.z - 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.3, 255, 255,
+                    0, 120, false, true, 2, nil, nil, false)
+
+                if dist <= interactDist then
+                    DrawText3D(pointA, 'Apasa E ca sa predai masina')
+                    if IsControlJustReleased(0, 38) then
+                        state = 'idle'
+                        TriggerServerEvent('delivery:complete', true)  -- bonusul de performanta
+
+                        if deliveryBlip then
+                            RemoveBlip(deliveryBlip)
+                            deliveryBlip = nil
+                        end
+                        if deliveryVehicle then
+                            DeleteVehicle(deliveryVehicle)
+                            deliveryVehicle = nil
                         end
                     end
                 end
