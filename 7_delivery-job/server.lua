@@ -21,6 +21,7 @@ RegisterNetEvent('delivery:complete', function(isFinal)
     TriggerClientEvent('ox_lib:notify', src, {
         title = 'Job Livrari',
         description = message,
-        type = 'success'
+        type = 'success',
+        position = 'top'
     })
 end)

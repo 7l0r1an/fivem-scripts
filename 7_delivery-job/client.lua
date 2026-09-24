@@ -79,7 +79,8 @@ CreateThread(function()
                         TriggerEvent('ox_lib:notify', {
                             title = 'Job Livrare',
                             description = 'Ai inceput livrarea cu succes',
-                            type = 'success'
+                            type = 'success',
+                            position = 'top'
                         })
                         currentTarget = getRandomPoint()
                         showDeliveryBlip(currentTarget)
