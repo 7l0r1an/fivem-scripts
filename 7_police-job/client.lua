@@ -1,4 +1,5 @@
 local textUIShown = false
+local callBlip = nil
 CreateThread(function()
     while true do
         local nearStation = false
@@ -61,7 +62,7 @@ RegisterCommand('apel', function()
     })
     lib.showContext('police_calls')
 end, false)
-local callBlip = nil
+
 RegisterNetEvent('7_police-job:setBlip', function(coords)
     if callBlip then
         RemoveBlip(callBlip)
@@ -76,4 +77,14 @@ RegisterNetEvent('7_police-job:setBlip', function(coords)
     AddTextComponentString('Apel Politie')
     EndTextCommandSetBlipName(callBlip)
 
+end)
+
+
+RegisterCommand('rezolvat', function()
+    TriggerServerEvent('7_police-job:resolveCall')
+end, false)
+
+RegisterNetEvent('7_police-job:deleteBlip', function()
+    RemoveBlip(callBlip)
+    callBlip = nil
 end)

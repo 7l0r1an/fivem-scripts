@@ -79,12 +79,12 @@ RegisterNetEvent('7_police-job:acceptCall', function(callId)
 
     if not call or call.status ~= 'nou' then
         TriggerClientEvent('ox_lib:notify', src, {
-                title = 'Eroare',
-                description = 'Apel indisponibil',
-                type = 'error',
-                position = 'center-right'
-            })
-            return
+            title = 'Eroare',
+            description = 'Apel indisponibil',
+            type = 'error',
+            position = 'center-right'
+        })
+        return
     end
     for id, c in pairs(calls) do
         if c.claimedBy == src and c.status == 'activ' then
@@ -101,10 +101,35 @@ RegisterNetEvent('7_police-job:acceptCall', function(callId)
     call.claimedBy = src
     TriggerClientEvent('7_police-job:setBlip', src, call.coords)
     TriggerClientEvent('ox_lib:notify', src, {
-                title = 'Apel Preluat',
-                description = 'Ai preluat apelul lui ' .. call.sender,
+        title = 'Apel Preluat',
+        description = 'Ai preluat apelul lui ' .. call.sender,
+        type = 'success',
+        position = 'center-right'
+    })
+end)
+
+
+RegisterNetEvent('7_police-job:resolveCall', function()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    for id, call in pairs(calls) do
+        if call.claimedBy == src and call.status == 'activ' then
+            calls[id] = nil
+            TriggerClientEvent('7_police-job:deleteBlip', src)
+            TriggerClientEvent('ox_lib:notify', src, {
+                title = 'Apel rezolvat',
+                description = 'Apelul a fost trecut ca rezolvat',
                 type = 'success',
                 position = 'center-right'
             })
-
+            return
+        end
+    end
+    TriggerClientEvent('ox_lib:notify', src, {
+                title = 'Eroare',
+                description = 'Nu ai vreun apel activ',
+                type = 'error',
+                position = 'center-right'
+            })
 end)
