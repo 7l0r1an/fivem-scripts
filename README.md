@@ -9,7 +9,7 @@ Colecție de scripturi QBCore scrise de mine în timp ce învăț FiveM developm
 - **noclip** — tool de noclip pentru development creat de mine.
 - **police-job** — job de poliție (QBCore) cu sistem de dispatch construit de la zero:
   - sistem de duty (on/off) cu verificare de job pe server
-  - apeluri de urgență (/911): cetățenii declanșează apeluri care ajung
+  - apeluri de urgență (/politia): jucatorii declanșează apeluri care ajung
     la toți polițiștii de serviciu, filtrat pe job și duty
   - meniu de apeluri (ox_lib) cu preluare (claim): un apel preluat dispare
     pentru ceilalți, iar un ofițer nu poate lua un al doilea apel până nu-l
